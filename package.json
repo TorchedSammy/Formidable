@@ -1,0 +1,22 @@
+{
+  "name": "senbetsu",
+  "version": "0.0.1",
+  "description": "discord bot yea",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TorchedSammy/Senbetsu.git"
+  },
+  "author": "TorchedSammy",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/TorchedSammy/Senbetsu/issues"
+  },
+  "homepage": "https://github.com/TorchedSammy/Senbetsu#readme",
+  "dependencies": {
+    "@luvella/firework": "^1.1.2"
+  }
+}
