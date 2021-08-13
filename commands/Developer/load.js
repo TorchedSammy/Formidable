@@ -15,6 +15,7 @@ class LoadCommand extends Firework.Command {
 
 		try {
 			props = new (require(`../${args[0]}.js`))(this.bot)
+			props.settings.category = args[0].split('/')[0]
 		} catch(e) {
 			msg.channel.createMessage(`An error occurred trying to reload ${args[0]}\n\n${e}`)
 			return
