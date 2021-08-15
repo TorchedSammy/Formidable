@@ -10,14 +10,15 @@ class MessageCreateEvent extends Firework.Event {
 		if (!msg.content.startsWith(prefix)) return;
 		if (msg.author.bot) return;
 
-		const args = msg.content.slice(prefix.length).trim().split(' ');
+		const str = msg.content.slice(prefix.length).trim();
+		const args = str.split(' ');
 		const command = args.shift().toLowerCase();		
 
 		try {
 			const cmd = this.bot.getCommand(command);
 			if (!cmd) return;
 
-			cmd.run({ msg, args, prefix });
+			cmd.run({ msg, args, str, prefix });
 		} catch (err) {
 			this.bot.logger.error(err);
 		}
