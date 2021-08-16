@@ -12,13 +12,17 @@ class UploadCommand extends Firework.Command {
 	}
 
 	async run({msg, args, str}) {
+		if(!args[0]) {
+			msg.channel.createMessage('❌ Missing arguments.');
+			return;
+		}
+
 		const program = new Command();
 
 		program
   		  .option('-t, --tags <tags...>', 'specify numbers')
   		  .option('-s, --source <source>', 'specify letters');
 
-		console.log(args)
 		program.parse(['', '', ...args]);
 		const m = await msg.channel.createMessage('Processing upload to channels...')
 
@@ -34,7 +38,7 @@ class UploadCommand extends Firework.Command {
 		if(!isNaN(digits) && opts.source == 'nh') {
 			source = 'nhentai'
 			nhDoujin = await nh.fetchDoujin(digits)
-			tags.push(...nhDoujin.tags.getByType('tag').map(t => t.name.replace(' ', '_')))
+			tags.push(...nhDoujin.tags.all.map(t => t.name.replace(' ', '-').replace('big-breasts', 'big-boobs')))
 		}
 
 		const sourcechan = msg.channel.guild.channels.find(c => c.name === source)
@@ -76,6 +80,15 @@ Tags/categories: ${entryids.map(idsarr => `<#${idsarr[0]}>`).join(' ')}`, {file:
 			case 'nhentai':
 				return `https://nhentai.net/g/${id}`
 		}
+	}
+
+	// ill use this function when i need to replace more than 1 tag
+	mapReplace(str, map) {
+		const matchStr = Object.keys(map).join('|');
+		if (!matchStr) return str;
+
+		const regexp = new RegExp(matchStr, 'g');
+		return str.replace(regexp, match => map[match]);
 	}
 }
 
