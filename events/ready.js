@@ -7,7 +7,7 @@ class ReadyEvent extends Firework.Event {
 		super(bot, {name: 'ready'})
 	}
 
-	async run() {
+	run() {
 		this.bot.logger.log('I am online!')
 		this.syncNHentai()
 		setInterval(() => this.syncNHentai(), 300000)
