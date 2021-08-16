@@ -3,7 +3,7 @@
 
 <img src="https://static.wikia.nocookie.net/bhlx/images/6/69/Formidable.png/revision/latest?cb=20190911161945">
 
-Formidable is a highly convenient "sorting maid." Senbe allows you to upload an image once to
+Formidable is a highly convenient "sorting maid," which allows you to upload an image once to
 multiple categorized channels in a Discord server.
 
 ## Other Features
