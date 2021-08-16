@@ -66,7 +66,8 @@ UID (for Senbetsu post idenification): **${id}**
 Source: ${source || 'None provided'}
 ${nhDoujin.titles.pretty}
 <${this.sourceSite(source, digits)}>
-Tags/categories: ${entryids.map(idsarr => `<#${idsarr[0]}>`).join(' ')}`, {file: thumb, name: `thumb.${nhDoujin.thumbnail.extension}`})
+Tags/categories: ${entryids.map(idsarr => `<#${idsarr[0]}>`).join(' ')}
+${tags.filter(t => t === 'certified').length !== 0 ? '\n✅ Certified masterpiece.' : ''}`, {file: thumb, name: `thumb.${nhDoujin.thumbnail.extension}`})
 				entries[tagchan.name][1] = m.id
 			}
 		}
