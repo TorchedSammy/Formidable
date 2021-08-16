@@ -62,7 +62,7 @@ class UploadCommand extends Firework.Command {
 			for (let i = entryids.length - 1; i >= 0; i--) {
 				const tagchan = this.bot.getChannel(entryids[i][0])
 				const m = await tagchan.createMessage(`
-UID (for Senbetsu post idenification): **${id}**
+UID: **${id}**
 Source: ${source || 'None provided'}
 ${nhDoujin.titles.pretty}
 <${this.sourceSite(source, digits)}>
@@ -72,7 +72,7 @@ ${tags.filter(t => t === 'certified').length !== 0 ? '\n🌟 Certified masterpie
 			}
 		}
 		this.bot.logger.debug('Adding entry', id, 'to database. Entry channel data:\b\n', JSON.stringify(entries))
-		await this.bot.db.put(id, JSON.stringify(entries))
+		await this.bot.db.put(id, JSON.stringify({postids: entries, source, digits}))
 		m.edit({content: `✅ Posted to all channels! UID is **${id}**`})
 	}
 

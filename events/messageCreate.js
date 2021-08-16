@@ -6,7 +6,7 @@ class MessageCreateEvent extends Firework.Event {
 	}
 
 	run(msg) {
-		const prefix = 'senbe, ';
+		const prefix = '<@!875790613017133087> ';
 		if (!msg.content.startsWith(prefix)) return;
 		if (msg.author.bot) return;
 
