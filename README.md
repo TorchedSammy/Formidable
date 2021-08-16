@@ -17,10 +17,10 @@ multiple categorized channels in a Discord server.
 
 # Setup
 1. Install Node.js (I develop on v14.17.0, but v12 should work?)
-2. Once installed, clone the Senbetsu GitHub repo:
+2. Once installed, clone the GitHub repo:
 ```
-git clone https://github.com/TorchedSammy/Senbetsu
-cd Senbetsu
+git clone https://github.com/TorchedSammy/Formidable
+cd Formidable
 ```
 3. Install dependencies
 ```
