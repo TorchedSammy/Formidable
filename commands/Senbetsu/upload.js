@@ -7,7 +7,8 @@ const nh = new nhentai.API();
 class UploadCommand extends Firework.Command {
 	constructor(bot) {
 		super(bot, {
-			name: 'upload'
+			name: 'upload',
+			aliases: ['upl']
 		});
 	}
 
@@ -31,17 +32,21 @@ class UploadCommand extends Firework.Command {
 		const digits = parseInt(arg);
 		const id = this.bot.genID();
 		let tags = opts.tags || []
-		let source = opts.source
+		let source = opts.source || (msg.attachments[0] ? 'img' : 'nh')
+		let prettysource = source.replace('nh', 'nhentai').replace('img', 'Image')
 		let entries = {};
 		let nhDoujin;
 
-		if(!isNaN(digits) && opts.source == 'nh') {
-			source = 'nhentai'
+		if(!isNaN(digits) && source == 'nh') {
 			nhDoujin = await nh.fetchDoujin(digits)
+			if(!nhDoujin) {
+				m.edit('❌ Error fetching doujin. Are you sure it exists?')
+				return
+			}
 			tags.push(...nhDoujin.tags.all.map(t => t.name.replace(' ', '-').replace('big-breasts', 'big-boobs')))
 		}
 
-		const sourcechan = msg.channel.guild.channels.find(c => c.name === source)
+		const sourcechan = msg.channel.guild.channels.find(c => c.name === prettysource)
 		if(sourcechan) entries[source] = [sourcechan.id]
 
 		for(let i = tags.length - 1; i >= 0; i--) {
@@ -49,26 +54,31 @@ class UploadCommand extends Firework.Command {
 			if(!tagchan) continue;
 			entries[tags[i]] = [tagchan.id]
 		}
-		// i need to store channel name, channel id and msg id
-		// like: {'tag': [chanid, msgid]}
-		if(msg.attachments[0]) {
+		const entryids = Object.values(entries)
+		if(source === 'img') {
 			const r = await fetch(msg.attachments[0].url)
-			//for (let i = channels.length - 1; i >= 0; i--) {
-			//	this.bot.getChannel(channels[i]).sendMessage()
-			//}
-		} else {
-			const thumb = await nhDoujin.thumbnail.fetch()
-			const entryids = Object.values(entries)
+			const img = await r.buffer()
 			for (let i = entryids.length - 1; i >= 0; i--) {
 				const tagchan = this.bot.getChannel(entryids[i][0])
-				const m = await tagchan.createMessage(`
+				const m2 = await tagchan.createMessage(`
 UID: **${id}**
-Source: ${source || 'None provided'}
+Source: ${prettysource}
+Tags/categories: ${entryids.map(idsarr => `<#${idsarr[0]}>`).join(' ')}
+${tags.filter(t => t === 'certified').length !== 0 ? '\n🌟 Certified masterpiece.' : ''}`, {file: img, name: msg.attachments[0].filename})
+				entries[tagchan.name][1] = m2.id
+			}
+		} else {
+			const thumb = await nhDoujin.thumbnail.fetch()
+			for (let i = entryids.length - 1; i >= 0; i--) {
+				const tagchan = this.bot.getChannel(entryids[i][0])
+				const m2 = await tagchan.createMessage(`
+UID: **${id}**
+Source: ${prettysource}
 ${nhDoujin.titles.pretty}
 <${this.sourceSite(source, digits)}>
 Tags/categories: ${entryids.map(idsarr => `<#${idsarr[0]}>`).join(' ')}
 ${tags.filter(t => t === 'certified').length !== 0 ? '\n🌟 Certified masterpiece.' : ''}`, {file: thumb, name: `thumb.${nhDoujin.thumbnail.extension}`})
-				entries[tagchan.name][1] = m.id
+				entries[tagchan.name][1] = m2.id
 			}
 		}
 		this.bot.logger.debug('Adding entry', id, 'to database. Entry channel data:\b\n', JSON.stringify(entries))
@@ -78,7 +88,7 @@ ${tags.filter(t => t === 'certified').length !== 0 ? '\n🌟 Certified masterpie
 
 	sourceSite(source, id) {
 		switch(source) {
-			case 'nhentai':
+			case 'nh':
 				return `https://nhentai.net/g/${id}`
 		}
 	}
