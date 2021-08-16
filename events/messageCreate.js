@@ -17,6 +17,10 @@ class MessageCreateEvent extends Firework.Event {
 		try {
 			const cmd = this.bot.getCommand(command);
 			if (!cmd) return;
+			if (cmd.settings.category === 'Developer' | cmd.settings.category === 'Senbetsu' && msg.author.id !== '439373663905513473') {
+				msg.channel.createMessage('❌ No permission to run this command.')
+				return;
+			}
 
 			cmd.run({ msg, args, str, prefix });
 		} catch (err) {
